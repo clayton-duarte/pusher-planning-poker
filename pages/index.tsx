@@ -1,30 +1,30 @@
 import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import styled from "styled-components";
-import Pusher from "pusher-js";
+import Axios from "axios";
 
-Pusher.logToConsole = process.env.NODE_ENV === "development";
-
-const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-  cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-});
+import pusher from "../libs/pusher-client";
 
 const Title = styled.h1`
-  font-size: 50px;
+  font-size: 32px;
 `;
 
 const Home = () => {
-  const subscribeToChannel = () => {
-    const channel = pusher.subscribe("my_channel");
-    channel.bind("my_event", (data) => console.log(JSON.stringify(data)));
-  };
+  const router = useRouter();
 
-  useEffect(() => {
-    subscribeToChannel();
-  }, []);
+  const handleClick = async () => {
+    try {
+      const { data } = await Axios.post("/api/createRoom");
+      router.push("/[roomId]", `/${data._id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
       <Title>My page</Title>
+      <button onClick={handleClick}>create room</button>
     </>
   );
 };

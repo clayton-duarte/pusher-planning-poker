@@ -3,6 +3,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 body {
+  font-family: monospace;
   background: #222222;
   color: #eeeeee
 }
