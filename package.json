@@ -7,7 +7,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "mongoose": "^5.9.20",
     "next": "latest",
+    "next-iron-session": "^4.1.7",
     "pusher": "^3.0.1",
     "pusher-js": "^6.0.3",
     "react": "^16.8.0",
