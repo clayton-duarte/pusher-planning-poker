@@ -1,17 +1,23 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-function initializeModel<Type>(model, schema) {
-  type Doc = Type & Document;
-  if (mongoose.models[model]) return mongoose.model<Doc>(model);
-  return mongoose.model<Doc>(model, schema);
+import { User, Room } from "../types";
+
+function initializeModel<Type extends Document>(name: string, schema: Schema) {
+  if (mongoose.models[name]) return mongoose.model<Document>(name);
+  return mongoose.model<Type>(name, schema);
 }
 
 // SCHEMAS
-const RoomSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema<User>({
+  name: String,
+});
+const RoomSchema = new mongoose.Schema<Room>({
+  host: String,
   crew: Array,
 });
 
 // MODELS
+export const UserModel = initializeModel("User", UserSchema);
 export const RoomModel = initializeModel("Room", RoomSchema);
 
 // CONNECTION
