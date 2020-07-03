@@ -2,12 +2,11 @@ import { HandlerWithSession } from "../../types";
 import { withSession } from "../../libs/session";
 
 const handler: HandlerWithSession = async (req, res) => {
-  // Getting session data
-  const roomId = req.session.get("roomId");
-  const user = req.session.get("user");
+  // Destroying session data
+  await req.session.destroy();
 
   // Returning response
-  return res.json({ user, roomId });
+  return res.json({ isSuccess: true });
 };
 
 export default withSession(handler);

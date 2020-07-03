@@ -15,7 +15,7 @@ const handler: HandlerWithSession = async (req, res) => {
 
     // Save and return
     req.session.set("roomId", newRoom._id);
-    req.session.save();
+    await req.session.save();
     return res.json(newRoom);
   } catch (err) {
     // TODO error handling

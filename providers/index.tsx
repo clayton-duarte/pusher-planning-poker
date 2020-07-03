@@ -4,6 +4,7 @@ import { Router } from "next/router";
 import Modal from "../components/Modal";
 import ModalProvider from "./modal";
 import ThemeProvider from "./theme";
+import UserProvider from "./user";
 
 interface ProvidersProps {
   router: Router;
@@ -12,10 +13,12 @@ interface ProvidersProps {
 const Provider: FunctionComponent<ProvidersProps> = ({ children }) => {
   return (
     <ThemeProvider>
-      <ModalProvider>
-        {children}
-        <Modal />
-      </ModalProvider>
+      <UserProvider>
+        <ModalProvider>
+          {children}
+          <Modal />
+        </ModalProvider>
+      </UserProvider>
     </ThemeProvider>
   );
 };

@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState, ChangeEvent } from "react";
 import { rgba } from "polished";
 
 import { useModal } from "../providers/modal";
+import { useUser } from "../providers/user";
 import { styled } from "../providers/theme";
 
 const StyledOverlay = styled.aside<{ isOpen: boolean }>`
@@ -94,6 +95,7 @@ const Modal: FunctionComponent = () => {
   const [error, setError] = useState<string>("");
   const [data, setData] = useState<string>("");
   const { isOpen, closeModal } = useModal();
+  const { setUser } = useUser();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData(e.target.value);
@@ -106,6 +108,7 @@ const Modal: FunctionComponent = () => {
   const handleConfirm = async () => {
     if (!data) return setError("A name is required");
     if (data.length < 3) return setError("This name is too short");
+    await setUser({ name: data });
     closeModal();
   };
 

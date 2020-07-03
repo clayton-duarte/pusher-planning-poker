@@ -12,7 +12,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
-  isOpen: true,
+  isOpen: false,
 };
 
 export enum ActionTypes {
