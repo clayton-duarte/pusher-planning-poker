@@ -1,24 +1,14 @@
-import App from "next/app";
-import { ThemeProvider, createGlobalStyle } from "styled-components";
+import React, { FunctionComponent } from "react";
+import { AppProps } from "next/app";
 
-const GlobalStyle = createGlobalStyle`
-body {
-  font-family: monospace;
-  background: #222222;
-  color: #eeeeee
-}
-`;
+import Providers from "../providers";
 
-const theme = {};
+const App: FunctionComponent<AppProps> = ({ Component, pageProps, router }) => {
+  return (
+    <Providers router={router}>
+      <Component {...pageProps} />
+    </Providers>
+  );
+};
 
-export default class MyApp extends App {
-  render() {
-    const { Component, pageProps } = this.props;
-    return (
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-        <GlobalStyle />
-      </ThemeProvider>
-    );
-  }
-}
+export default App;
