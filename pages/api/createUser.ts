@@ -1,22 +1,21 @@
-import { dbConnect, RoomModel } from "../../libs/mongoose";
+import { dbConnect, UserModel } from "../../libs/mongoose";
 import { HandlerWithSession } from "../../types";
 import { withSession } from "../../libs/session";
 
 const handler: HandlerWithSession = async (req, res) => {
-  const user = req.session.get("user");
+  const { name } = req.body;
 
+  // Creating User
   try {
-    // Create room
     await dbConnect();
-    const newRoom = await RoomModel.create({
-      host: user,
-      crew: [user],
+    const newUser = await UserModel.create({
+      name,
     });
 
-    // Save and return
-    req.session.set("roomId", newRoom._id);
+    // Saving and return
+    req.session.set("user", newUser);
     req.session.save();
-    return res.json(newRoom);
+    return res.json(newUser);
   } catch (err) {
     // TODO error handling
     return res.status(500).json(err);
