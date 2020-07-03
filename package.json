@@ -11,6 +11,7 @@
     "mongoose": "^5.9.20",
     "next": "latest",
     "next-iron-session": "^4.1.7",
+    "polished": "^3.6.5",
     "pusher": "^3.0.1",
     "pusher-js": "^6.0.3",
     "react": "^16.8.0",
