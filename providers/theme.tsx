@@ -1,9 +1,15 @@
 import React, { FunctionComponent } from "react";
-import { ThemeProvider, createGlobalStyle } from "styled-components";
+import baseStyled, {
+  ThemedStyledInterface,
+  createGlobalStyle,
+  ThemeProvider,
+} from "styled-components";
 
 enum Palette {
   primary = "#444444",
   secondary = "#666666",
+  success = "#339933",
+  error = "#993333",
   text = "#222222",
   bg = "#eeeeee",
 }
@@ -16,9 +22,13 @@ export type Theme = typeof theme;
 
 const GlobalStyle = createGlobalStyle<Theme>`
 body, html, #__next {
-  font-family: monospace;
   background: ${(props) => props.theme.palette.bg};
   color: ${(props) => props.theme.palette.text};
+  font-family: monospace;
+  font-size: 16px;
+}
+*  {
+  box-sizing: border-box;
 }
 `;
 
@@ -31,4 +41,5 @@ const Provider: FunctionComponent = ({ children }) => {
   );
 };
 
+export const styled = baseStyled as ThemedStyledInterface<Theme>;
 export default Provider;

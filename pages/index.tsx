@@ -1,9 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Axios from "axios";
-
-import pusher from "../libs/pusher-client";
 
 const Title = styled.h1`
   font-size: 32px;
@@ -23,7 +21,7 @@ const Home = () => {
 
   return (
     <>
-      <Title>My page</Title>
+      <Title>Hello</Title>
       <button onClick={handleClick}>create room</button>
     </>
   );
