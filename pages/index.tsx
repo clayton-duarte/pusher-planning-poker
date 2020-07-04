@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
+import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import Button from "../components/Button";
 
@@ -10,25 +11,20 @@ const Title = styled.h1`
 
 const Home = () => {
   const { user, clearUser, getUser } = useUser();
-  // const router = useRouter();
-
-  // const handleClick = async () => {
-  //   try {
-  //     const { data } = await Axios.post("/api/createRoom");
-  //     router.push("/[roomId]", `/${data._id}`);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const { clearRoom, createRoom } = useRoom();
 
   useEffect(() => {
-    if (!user) getUser();
+    if (!user) {
+      clearRoom();
+      getUser();
+    }
   }, [user]);
 
   return (
     <>
       <Title>Hello {user?.name}</Title>
       <Button onClick={clearUser}>Logout</Button>
+      <Button onClick={createRoom}>Create Room</Button>
     </>
   );
 };

@@ -81,7 +81,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const Modal: FunctionComponent<{ canCancel: boolean }> = ({ canCancel }) => {
+const Modal: FunctionComponent<{ canCancel?: boolean }> = ({ canCancel }) => {
   const [error, setError] = useState<string>("");
   const [data, setData] = useState<string>("");
   const { isOpen, closeModal } = useModal();

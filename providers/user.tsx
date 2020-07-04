@@ -30,12 +30,12 @@ const UserContext = createContext<[User, Dispatch<Action>]>([
 ]);
 
 // REDUCER
-const reducer = (state, action) => {
+const reducer = (state: User, action: Action) => {
   switch (action.type) {
     case ActionTypes.GET_USER:
-      return { state, ...action.payload };
+      return { ...state, ...action.payload };
     case ActionTypes.SET_USER:
-      return { state, ...action.payload };
+      return { ...state, ...action.payload };
     case ActionTypes.CLEAR_USER:
       return null;
     default:

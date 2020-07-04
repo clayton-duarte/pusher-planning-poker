@@ -9,8 +9,8 @@ const handler: HandlerWithSession = async (req, res) => {
     // Create room
     await dbConnect();
     const newRoom = await RoomModel.create({
+      members: [user],
       host: user,
-      crew: [user],
     });
 
     // Save and return

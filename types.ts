@@ -16,7 +16,7 @@ export interface User {
 }
 
 export interface Room {
+  members: User[];
   host: string;
-  crew: User[];
   _id?: string;
 }
