@@ -26,9 +26,13 @@ body, html, #__next {
   color: ${(props) => props.theme.palette.text};
   font-family: monospace;
   font-size: 16px;
+  margin: 0;
 }
-*  {
+* {
   box-sizing: border-box;
+}
+button, *[role="button"] {
+  cursor: pointer;
 }
 `;
 

@@ -74,7 +74,7 @@ export const useUser = () => {
   };
 
   const clearUser = async () => {
-    await Axios.post<User>("/api/getUser", user);
+    await Axios.post<User>("/api/clearUser");
     dispatch({
       type: ActionTypes.CLEAR_USER,
     });

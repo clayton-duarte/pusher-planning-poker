@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
-import Axios from "axios";
 
 import { useUser } from "../providers/user";
+import Button from "../components/Button";
 
 const Title = styled.h1`
   font-size: 32px;
@@ -11,25 +10,25 @@ const Title = styled.h1`
 
 const Home = () => {
   const { user, clearUser, getUser } = useUser();
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handleClick = async () => {
-    try {
-      const { data } = await Axios.post("/api/createRoom");
-      router.push("/[roomId]", `/${data._id}`);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const handleClick = async () => {
+  //   try {
+  //     const { data } = await Axios.post("/api/createRoom");
+  //     router.push("/[roomId]", `/${data._id}`);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   useEffect(() => {
-    getUser();
-  }, []);
+    if (!user) getUser();
+  }, [user]);
 
   return (
     <>
       <Title>Hello {user?.name}</Title>
-      <button onClick={handleClick}>create room</button>
+      <Button onClick={clearUser}>Logout</Button>
     </>
   );
 };

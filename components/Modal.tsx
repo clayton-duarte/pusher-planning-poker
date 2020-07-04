@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState, ChangeEvent } from "react";
+import { FiX, FiCheck } from "react-icons/fi";
 import { rgba } from "polished";
 
 import { useModal } from "../providers/modal";
@@ -13,7 +14,6 @@ const StyledOverlay = styled.aside<{ isOpen: boolean }>`
   place-content: center;
   transition: 0.2s ease;
   position: fixed;
-  cursor: pointer;
   display: grid;
   padding: 1rem;
   bottom: 0;
@@ -26,30 +26,37 @@ const StyledModal = styled.section`
   box-shadow: 0 0 1rem ${(props) => rgba(props.theme.palette.text, 0.5)};
   background: ${(props) => props.theme.palette.bg};
   border-radius: 1rem;
-  max-width: 768px;
+  max-width: 425px;
   overflow: hidden;
   margin: 0 auto;
   display: grid;
   cursor: auto;
   width: 100%;
   gap: 1rem;
-  grid-template-areas:
-    "header header header"
-    "content content content"
-    "cancel . confirm";
 `;
 
 const StyledHeader = styled.header`
-  background: ${(props) => props.theme.palette.secondary};
+  background: ${(props) => props.theme.palette.primary};
   color: ${(props) => props.theme.palette.bg};
   text-transform: capitalize;
   text-align: center;
-  grid-area: header;
+  font-size: 1.5rem;
+  display: grid;
   padding: 1rem;
 `;
 
+const StyledFooter = styled.footer`
+  background: ${(props) => props.theme.palette.primary};
+  color: ${(props) => props.theme.palette.bg};
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  font-size: 2rem;
+  display: grid;
+  padding: 1rem;
+  gap: 1rem;
+`;
+
 const StyledContent = styled.article`
-  grid-area: content;
   display: grid;
   padding: 1rem;
   gap: 1rem;
@@ -74,24 +81,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const StyledButton = styled.button<{ area: string }>`
-  background: ${(props) => props.theme.palette.primary};
-  color: ${(props) => props.theme.palette.bg};
-  grid-area: ${(props) => props.area};
-  text-transform: uppercase;
-  font-family: monospace;
-  border-radius: 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 1rem;
-  border: none;
-  margin: 1rem;
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Modal: FunctionComponent = () => {
+const Modal: FunctionComponent<{ canCancel: boolean }> = ({ canCancel }) => {
   const [error, setError] = useState<string>("");
   const [data, setData] = useState<string>("");
   const { isOpen, closeModal } = useModal();
@@ -102,7 +92,8 @@ const Modal: FunctionComponent = () => {
   };
 
   const handleCancel = () => {
-    closeModal();
+    if (canCancel) closeModal();
+    else setError("you cant proceed without confirm");
   };
 
   const handleConfirm = async () => {
@@ -113,9 +104,9 @@ const Modal: FunctionComponent = () => {
   };
 
   return (
-    <StyledOverlay onClick={handleCancel} isOpen={isOpen}>
+    <StyledOverlay role="button" onClick={handleCancel} isOpen={isOpen}>
       <StyledModal onClick={(e) => e.stopPropagation()}>
-        <StyledHeader> Hey, what's your name?</StyledHeader>
+        <StyledHeader>what's your name?</StyledHeader>
         <StyledContent>
           <StyledLabel>Name:</StyledLabel>
           <StyledInput
@@ -125,12 +116,10 @@ const Modal: FunctionComponent = () => {
           />
           {error && <StyledError>{error}</StyledError>}
         </StyledContent>
-        <StyledButton onClick={handleCancel} area="cancel">
-          cancel
-        </StyledButton>
-        <StyledButton onClick={handleConfirm} area="confirm">
-          confirm
-        </StyledButton>
+        <StyledFooter>
+          <FiX role="button" onClick={handleCancel} />
+          <FiCheck role="button" onClick={handleConfirm} />
+        </StyledFooter>
       </StyledModal>
     </StyledOverlay>
   );
