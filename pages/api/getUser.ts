@@ -5,7 +5,7 @@ const handler: HandlerWithSession = async (req, res) => {
   try {
     // Getting session data
     const user = req.session.get("user");
-    console.log(user);
+
     // Returning response
     return res.json(user);
   } catch (err) {

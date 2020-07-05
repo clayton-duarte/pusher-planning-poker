@@ -8,15 +8,16 @@ import React, {
 import { useRouter, NextRouter } from "next/router";
 import Axios from "axios";
 
+import pusher from "../libs/pusher-client";
 import { Room } from "../types";
 
 // STATE
-const initialState: Room = null;
-
 export enum ActionTypes {
+  SET_CONNECTION = "SET_CONNECTION",
+  SET_CHANNEL = "SET_CHANNEL",
   CREATE_ROOM = "CREATE_ROOM",
   CLEAR_ROOM = "CLEAR_ROOM",
-  ENTER_ROOM = "ENTER_ROOM",
+  GET_ROOM = "GET_ROOM",
 }
 
 interface Action {
@@ -24,21 +25,24 @@ interface Action {
   type: ActionTypes;
 }
 
-const RoomContext = createContext<[Room, Dispatch<Action>]>([
-  initialState,
-  null,
-]);
+const RoomContext = createContext<[Room, Dispatch<Action>]>([null, null]);
 
 // REDUCER
 const reducer = (router: NextRouter) => (state: Room, action: Action) => {
   switch (action.type) {
-    case ActionTypes.CREATE_ROOM:
-      router.push("/[roomId]", `/${action.payload._id}`);
+    case ActionTypes.SET_CONNECTION:
       return { ...state, ...action.payload };
-    case ActionTypes.ENTER_ROOM:
+    case ActionTypes.CREATE_ROOM:
+      router?.push("/[roomId]", `/${action.payload._id}`);
+      return { ...state, ...action.payload };
+    case ActionTypes.SET_CHANNEL:
       return { ...state, ...action.payload };
     case ActionTypes.CLEAR_ROOM:
+      state?.channel?.unsubscribe();
+      router?.push("/");
       return null;
+    case ActionTypes.GET_ROOM:
+      return { ...state, ...action.payload };
     default:
       return state;
   }
@@ -56,16 +60,45 @@ export const useRoom = () => {
     });
   };
 
-  const enterRoom = async (roomId) => {
+  const getRoom = async (roomId: string) => {
     try {
-      const { data } = await Axios.post<Room>("/api/enterRoom", { roomId });
+      const { data } = await Axios.post<Room>("/api/getRoom", { roomId });
       dispatch({
-        type: ActionTypes.ENTER_ROOM,
+        type: ActionTypes.GET_ROOM,
         payload: data,
       });
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const enterRoom = async (roomId: string) => {
+    // Register to room channel
+    const channel = pusher.subscribe(roomId);
+    dispatch({
+      type: ActionTypes.SET_CHANNEL,
+      payload: { channel },
+    });
+
+    // Observe connection state
+    pusher.connection.bind("state_change", (states) => {
+      dispatch({
+        type: ActionTypes.SET_CONNECTION,
+        payload: { connection: states.current },
+      });
+    });
+
+    // Observe room updates
+    pusher.bind("update-room", () => {
+      getRoom(roomId);
+    });
+
+    // Get initial data
+    getRoom(roomId);
+  };
+
+  const leaveRoom = () => {
+    room?.channel?.unsubscribe();
   };
 
   const clearRoom = async () => {
@@ -74,13 +107,13 @@ export const useRoom = () => {
     });
   };
 
-  return { room, enterRoom, createRoom, clearRoom };
+  return { room, enterRoom, createRoom, clearRoom, leaveRoom };
 };
 
 // PROVIDER
 const Provider: FunctionComponent = ({ children }) => {
   const router = useRouter();
-  const [state, dispatch] = useReducer(reducer(router), initialState);
+  const [state, dispatch] = useReducer(reducer(router), null);
 
   return (
     <RoomContext.Provider value={[state, dispatch]}>

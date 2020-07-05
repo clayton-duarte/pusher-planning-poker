@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-iron-session";
+import { Channel } from "pusher-js";
 
 interface RequestWithSession extends NextApiRequest {
   session: Session;
@@ -18,5 +19,7 @@ export interface User {
 export interface Room {
   members: User[];
   host: string;
+  connection?: string;
+  channel?: Channel;
   _id?: string;
 }

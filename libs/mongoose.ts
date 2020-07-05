@@ -2,9 +2,10 @@ import mongoose, { Document, Schema } from "mongoose";
 
 import { User, Room } from "../types";
 
-function initializeModel<Type extends Document>(name: string, schema: Schema) {
-  if (mongoose.models[name]) return mongoose.model<Document>(name);
-  return mongoose.model<Type>(name, schema);
+function initializeModel<Type>(name: string, schema: Schema<Type>) {
+  type DocumentType = Type & Document;
+  if (mongoose.models[name]) return mongoose.model<DocumentType>(name);
+  return mongoose.model<DocumentType>(name, schema);
 }
 
 // SCHEMAS
@@ -12,13 +13,13 @@ const UserSchema = new mongoose.Schema<User>({
   name: String,
 });
 const RoomSchema = new mongoose.Schema<Room>({
+  members: Array,
   host: String,
-  crew: Array,
 });
 
 // MODELS
-export const UserModel = initializeModel("User", UserSchema);
-export const RoomModel = initializeModel("Room", RoomSchema);
+export const UserModel = initializeModel<User>("User", UserSchema);
+export const RoomModel = initializeModel<Room>("Room", RoomSchema);
 
 // CONNECTION
 export async function dbConnect() {
