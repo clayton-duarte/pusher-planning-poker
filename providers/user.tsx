@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import Axios from "axios";
 
+import pusher, { PusherEvents } from "../libs/pusher-client";
 import { useModal } from "./modal";
 import { User } from "../types";
 
@@ -75,6 +76,7 @@ export const useUser = () => {
 
   const clearUser = async () => {
     await Axios.post<User>("/api/clearUser");
+    pusher.send_event(PusherEvents.UPDATE_ROOM, "");
     dispatch({
       type: ActionTypes.CLEAR_USER,
     });

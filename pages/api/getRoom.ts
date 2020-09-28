@@ -19,10 +19,12 @@ const handler: HandlerWithSession = async (req, res) => {
     if (!roomFound.members.find(({ _id }) => _id === user._id)) {
       await RoomModel.updateOne({ _id: roomId }, { $push: { members: user } });
       // Trigger room update
-      pusher.trigger(roomId, "update-room", roomId);
+      console.log("update-room", roomId);
+      pusher.trigger(roomId, "update-room", user);
     }
 
     // Returning new room data
+    console.log(roomId, "update-room", { message: "works" });
     return res.json(roomFound);
   } catch (err) {
     // TODO error handling, room not found, db connect

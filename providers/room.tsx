@@ -8,7 +8,7 @@ import React, {
 import { useRouter, NextRouter } from "next/router";
 import Axios from "axios";
 
-import pusher from "../libs/pusher-client";
+import pusher, { PusherEvents } from "../libs/pusher-client";
 import { Room } from "../types";
 
 // STATE
@@ -80,8 +80,10 @@ export const useRoom = () => {
       payload: { channel },
     });
 
+    pusher.send_event(PusherEvents.UPDATE_ROOM, "entered");
+
     // Observe connection state
-    pusher.connection.bind("state_change", (states) => {
+    pusher.connection.bind(PusherEvents.STATE_CHANGE, (states) => {
       dispatch({
         type: ActionTypes.SET_CONNECTION,
         payload: { connection: states.current },
@@ -89,7 +91,8 @@ export const useRoom = () => {
     });
 
     // Observe room updates
-    pusher.bind("update-room", () => {
+    pusher.bind(PusherEvents.UPDATE_ROOM, (...params) => {
+      console.log(PusherEvents.UPDATE_ROOM, ...params);
       getRoom(roomId);
     });
 
@@ -98,7 +101,7 @@ export const useRoom = () => {
   };
 
   const leaveRoom = () => {
-    room?.channel?.unsubscribe();
+    // room?.channel?.unsubscribe();
   };
 
   const clearRoom = async () => {
